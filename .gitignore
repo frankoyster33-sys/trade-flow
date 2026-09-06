@@ -1,0 +1,13 @@
+.data/
+node_modules/
+.python/
+*.log
+.env*
+.DS_Store
+__pycache__/
+*.pyc
+*.app/
+*.zip
+*.xlsx
+*.xls
+!vendor/batch/assets/报价模版.xlsx
