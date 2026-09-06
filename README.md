@@ -27,7 +27,14 @@ Python 读取表格需要 openpyxl、pandas、xlrd。当前工作区已提供前
 python3 -m pip install --target .python -r requirements.txt
 ```
 
-首次运行后，在系统设置中重新填写自己的硅基流动密钥并选择文字、图片模型，然后运行「安装桌面入口.command」。
+从 GitHub 下载后，在项目目录执行以下命令准备两个入口，再运行「启动 trade flow.command」。
+
+```sh
+chmod +x *.command
+python3 scripts/install_shortcut.py
+```
+
+首次运行后，在系统设置中重新填写自己的硅基流动密钥并选择文字、图片模型。
 
 可选环境设置：`HS_QUOTE_NODE`、`HS_QUOTE_PYTHON`、`HS_QUOTE_PORT`、`HS_QUOTE_DATA`、`HS_QUOTE_INTERNAL`、`HS_QUOTE_EXTERNAL`。所有默认数据目录均是本地目录。
 
