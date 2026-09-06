@@ -1,13 +1,17 @@
 """Install a small local macOS launcher; quotation data stays in the project."""
 from pathlib import Path
 import plistlib
+import subprocess
+import shutil
+from datetime import datetime
 import sys
 
 if sys.platform != 'darwin':
     raise SystemExit('桌面入口目前支持 macOS。')
 
 root = Path(__file__).resolve().parent.parent
-app = Path.home() / 'Desktop' / 'trade flow.app'
+app = Path.home() / 'Applications' / 'trade flow.app'
+desktop = Path.home() / 'Desktop' / 'trade flow.app'
 bundle_id = 'local.tradeflow.quotation'
 plist = app / 'Contents' / 'Info.plist'
 if app.exists():
@@ -31,22 +35,30 @@ plist.write_bytes(plistlib.dumps({
     'CFBundleVersion': '1',
     'CFBundleShortVersionString': '0.1.0',
     'LSUIElement': True,
+    'LSMinimumSystemVersion': '11.0',
+    'CFBundleSupportedPlatforms': ['MacOSX'],
+    'NSDesktopFolderUsageDescription': '读取报价项目、内部报价池和对外报价单池，以启动本机报价工作台。',
     'LSApplicationCategoryType': 'public.app-category.business',
 }))
 (resources / 'project-path.txt').write_text(str(root) + '\n')
 launcher = macos / 'launch'
-launcher.write_text('''#!/bin/zsh
-HS_RESOURCES="$(cd -- "$(dirname -- "$0")/../Resources" && pwd)"
-IFS= read -r HS_PROJECT < "$HS_RESOURCES/project-path.txt"
-if [[ -f "$HS_PROJECT/启动 trade flow.command" ]]; then
-  mkdir -p "$HS_PROJECT/.data"
-  if ! /bin/zsh "$HS_PROJECT/启动 trade flow.command" >"$HS_PROJECT/.data/desktop-launch.log" 2>&1; then
-    /usr/bin/open -t "$HS_PROJECT/.data/desktop-launch.log"
-  fi
-else
-  print '项目文件夹已移动。请在新位置运行「安装桌面入口.command」。' > "$HS_RESOURCES/启动提示.txt"
-  /usr/bin/open -t "$HS_RESOURCES/启动提示.txt"
-fi
-''')
+subprocess.run([
+    '/usr/bin/xcrun', 'swiftc', str(root / 'scripts' / 'DesktopLauncher.swift'),
+    '-o', str(launcher),
+], check=True)
 launcher.chmod(0o755)
+subprocess.run(['/usr/bin/codesign', '--force', '--sign', '-', str(app)], check=True)
 print(f'已创建桌面入口：{app}')
+if desktop.is_symlink():
+    if desktop.resolve() != app.resolve():
+        raise SystemExit('桌面已有不同目标的 trade flow 入口，未覆盖。')
+elif desktop.exists():
+    desktop_plist = desktop / 'Contents' / 'Info.plist'
+    if not desktop_plist.exists() or plistlib.loads(desktop_plist.read_bytes()).get('CFBundleIdentifier') != bundle_id:
+        raise SystemExit('桌面已有同名项目，未覆盖。')
+    backup = root / '.data' / 'retired-launchers' / datetime.now().strftime('%Y%m%d-%H%M%S')
+    backup.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(desktop), str(backup / desktop.name))
+if not desktop.exists():
+    desktop.symlink_to(app, target_is_directory=True)
+print(f'桌面快捷入口：{desktop}')
