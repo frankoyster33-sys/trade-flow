@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import {getSettings} from '../lib/config.mjs';
+import {extract} from '../lib/provider.mjs';
+import {cleanInput,validateInput} from '../lib/input.mjs';
+const t=Date.now(),s=await getSettings();
+const text='虚构测试，禁止对外发送。TEST Quick Example Co.，联系人 Test Buyer，邮箱 buyer@example.test。HDPE透明平口袋，宽30cm，长30cm，单层厚0.03mm，50000个，每箱2500个。无印刷，正反面均0色，覆盖率0%，版数0。FOB Shenzhen。';
+const input=cleanInput(await extract(s,{text}),'TEST-QUICK');
+assert.equal(input.items[0].quantity,50000);assert.equal(input.items[0].width_cm,30);assert.equal((await validateInput(input)).errors.length,0);
+const result={provider:'SiliconFlow',textModel:s.textModel,thinking:false,seconds:Math.round((Date.now()-t)/1000),passed:true};
+await fs.writeFile('.data/verification/provider-smoke.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));

@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {FileBlob,SpreadsheetFile} from '@oai/artifact-tool';
+import {readReviewed,buildInternal} from '../lib/workbooks.mjs';
+import {cleanInput,validateInput} from '../lib/input.mjs';
+import {hash,within,publish} from '../lib/files.mjs';
+const root=path.resolve('.data/verification/tests');await fs.mkdir(root,{recursive:true});
+const record=(JSON.parse(await fs.readFile('.data/records.json','utf8'))).records.find(r=>r.id==='Q-20260906-C2131A');
+async function editCopy(name,edits){const w=await SpreadsheetFile.importXlsx(await FileBlob.load(record.path));for(const [sheet,cell,v]of edits){const r=w.worksheets.getItem(sheet).getRange(cell);r.clear({applyTo:'contents'});r.values=[[v]];}const file=path.join(root,name+'.xlsx');await(await SpreadsheetFile.exportXlsx(w)).save(file);return file;}
+test('WPS保存后的人工美元价准确读回，原文件只读',async()=>{const before=await hash(record.path);const r=await readReviewed(record.path,record);assert.equal(r.recalculate,false);assert.equal(r.items[0].approved_unit_price,0.025678);assert.equal(await hash(record.path),before);});
+test('尺寸改变必须重算，同时保留人工售价',async()=>{const file=await editCopy('dimension-change',[['Sheet1','A3',35]]);const r=await readReviewed(file,record);assert.equal(r.recalculate,true);assert.equal(r.input.items[0].width_cm,35);assert.equal(r.overrides.Sheet1.C19,0.025678);const output=path.join(root,'recalculated.xlsx');const built=await buildInternal(r.input,output,{overrides:r.overrides,commercial:r.commercial,previewDir:path.join(root,'previews')});assert.notEqual(built.result.items[0].unit_weight_kg,record.engine.items[0].unit_weight_kg);const revised={...record,input:r.input,names:built.names,baseline:built.baseline,commercial:built.commercial,overrides:r.overrides};const again=await readReviewed(output,revised);assert.equal(again.recalculate,false);assert.equal(again.items[0].width_cm,35);assert.equal(again.items[0].approved_unit_price,0.025678);});
+test('缺少客户联系方式阻止对外出单',async()=>{const file=await editCopy('missing-contact',[['报价资料','B5',''],['报价资料','B6','']]);await assert.rejects(readReviewed(file,record),/邮箱或电话/);});
+test('报价页与汇总中的两个人工售价冲突必须指出',async()=>{const file=await editCopy('price-conflict',[['批量汇总','Q5',0.04]]);await assert.rejects(readReviewed(file,record),/单价不一致/);});
+test('数量档默认分别计算运费，不能累加成一次出货',async()=>{const input=cleanInput({...record.input,items:[{...record.input.items[0],shipment_group:null},{...record.input.items[0],quantity:100000,shipment_group:null}]},'TEST-TIERS');const {result}=await validateInput(input);assert.notEqual(result.items[0].shipment_group,result.items[1].shipment_group);assert.equal(result.items[0].fob_total_cny,1800);assert.equal(result.items[1].fob_total_cny,1800);assert.equal(result.items[0].freight_cny_per_pc,0.036);assert.equal(result.items[1].freight_cny_per_pc,0.018);});
+test('缺尺寸保留为空，不用默认值编造',async()=>{const input=cleanInput({...record.input,items:[{...record.input.items[0],width_cm:null}]},'TEST-MISSING');assert.ok((await validateInput(input)).errors.some(e=>e.includes('宽度')));});
+test('WPS空字符串不能变成客户电话或地址',async()=>{const r=await readReviewed(record.path,record);assert.equal(r.commercial.phone,'');assert.equal(r.commercial.address,'');});
+test('替换为另一份报价文件时阻止错误关联',async()=>{const file=await editCopy('wrong-record',[['报价资料','B2','OTHER-QUOTE']]);await assert.rejects(readReviewed(file,record),/编号与当前记录不同/);});
+test('图片无印刷有来源时自动补零，数量档强制独立',async()=>{const raw=JSON.parse(await fs.readFile('.data/records.json','utf8')).records.find(r=>r.id==='Q-20260906-C6AD46').extracted;const input=cleanInput(raw,'TEST-IMAGE');assert.equal(input.items[0].front_colors,0);assert.equal(input.items[0].back_colors,0);assert.notEqual(input.items[0].shipment_group,input.items[1].shipment_group);assert.equal((await validateInput(input)).errors.length,0);});
+test('文件操作拒绝越界，拒绝覆盖旧报价',async()=>{await assert.rejects(within(root,path.resolve('server.mjs')),/指定报价/);const staged=path.join(root,'staged.txt');await fs.writeFile(staged,'new');const target=path.join(root,'kept.txt');await fs.writeFile(target,'old');await assert.rejects(publish(root,'kept.txt',staged),{code:'EEXIST'});assert.equal(await fs.readFile(target,'utf8'),'old');});

@@ -1,0 +1,13 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {Workbook,SpreadsheetFile} from '@oai/artifact-tool';
+const dir=path.resolve('.data/verification');await fs.mkdir(dir,{recursive:true});
+const wb=Workbook.create(),s=wb.worksheets.add('TEST inquiry');
+s.getRange('A1:I1').merge();s.getRange('A1').values=[['TEST ONLY — Fictional inquiry / 测试询价，请勿发送客户']];
+s.getRange('A2:I2').merge();s.getRange('A2').values=[['TEST Example Co. | Contact: Test Buyer | buyer@example.test | FOB Shenzhen']];
+s.getRange('A4:I6').values=[['Bag / material','Width cm','Length cm','Thickness mm','Quantity pcs','PCS/CTN','Bag color','Printing','Plate count'],['Flat / HDPE',30,30,0.03,50000,2500,'Transparent','None',0],['Flat / HDPE',30,30,0.03,100000,2500,'Transparent','None',0]];
+s.getRange('A8:I8').merge();s.getRange('A8').values=[['Independent quantity options. Quote each quantity separately. 无印刷，印刷覆盖率0%。']];
+s.getRange('A1:I8').format={font:{name:'Arial',size:11},wrapText:true,verticalAlignment:'center'};s.getRange('A:I').format.columnWidth=17;s.getRange('A:A').format.columnWidth=24;s.getRange('1:8').format.rowHeight=34;s.getRange('A4:I4').format.fill='#E9F1E4';s.showGridLines=false;
+await(await SpreadsheetFile.exportXlsx(wb)).save(path.join(dir,'TEST-inquiry.xlsx'));
+await fs.writeFile(path.join(dir,'TEST-inquiry.png'),new Uint8Array(await(await wb.render({sheetName:s.name,range:'A1:I8',scale:1.5,format:'png'})).arrayBuffer()));
+console.log('Created fictional inquiry Excel and image.');
