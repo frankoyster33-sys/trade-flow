@@ -1,0 +1,51 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>trade flow</title><link rel="stylesheet" href="/style.css"><script src="/lucide.min.js" defer></script><script src="/app.js" defer></script></head><body>
+
+<div id="hs-quotation-pool" aria-label="trade flow">
+  <header class="hs-header">
+    <div class="hs-brand">trade flow</div>
+    <nav class="hs-nav" aria-label="主要导航">
+      <button type="button" data-view="overview">概览</button>
+      <button type="button" data-view="internal" aria-current="page">内部报价池</button>
+      <button type="button" data-view="external">对外报价单</button>
+    </nav>
+    <span class="hs-demo"><button type="button" class="hs-about-link" id="hs-settings">模型设置</button></span>
+  </header>
+  <main class="hs-main">
+    <div class="hs-title-row">
+      <div><h1 id="hs-pool-title">内部报价池</h1><p class="hs-description" id="hs-pool-description">在 Excel 中审核并保存后，即可生成对外报价单。</p></div>
+      <button type="button" class="hs-button hs-title-action" id="hs-import-link"><i data-lucide="plus" aria-hidden="true"></i>导入询价</button>
+    </div>
+    <div class="hs-notice" id="hs-pool-notice" role="status" aria-live="polite" hidden>
+      <div><strong id="hs-notice-title"></strong><p id="hs-notice-detail"></p></div>
+      <div class="hs-notice-actions"><button type="button" class="hs-button hs-subtle" id="hs-notice-link" hidden>查看对外报价单<i data-lucide="arrow-right" aria-hidden="true"></i></button><button type="button" class="hs-close" id="hs-notice-close" aria-label="关闭提示"><i data-lucide="x" aria-hidden="true"></i></button></div>
+    </div>
+    <section id="hs-pool-list-section" aria-labelledby="hs-pool-title">
+      <div class="hs-toolbar">
+        <label class="hs-search"><i data-lucide="search" aria-hidden="true"></i><input type="search" id="hs-pool-search" placeholder="搜索客户、报价编号、规格" aria-label="搜索客户、报价编号、规格"></label>
+        <label class="hs-date-select">日期<select id="hs-pool-date" aria-label="报价日期"><option value="all">全部日期</option><option value="today">今天</option><option value="week">近 7 天</option></select></label>
+      </div>
+      <div class="hs-filters" id="hs-pool-filters" aria-label="报价状态筛选"></div>
+      <div class="hs-col-head" aria-hidden="true"><span>报价文件</span><span class="hs-save-head">最近保存</span><span>状态</span><span>操作</span></div>
+      <div id="hs-pool-rows"></div>
+      <div class="hs-page-footer"><span id="hs-pool-count"></span><span class="hs-footer-note"><i data-lucide="folder" aria-hidden="true"></i>按日期归档 · 保留内部原表</span></div>
+    </section>
+    <section id="hs-pool-overview" aria-labelledby="hs-pool-title" hidden>
+      <div class="hs-import-area">
+        <h2>导入新询价</h2><p>上传表格或图片，也可以直接粘贴文字。</p>
+        <div class="hs-import-controls"><button type="button" class="hs-button" id="hs-upload-tab"><i data-lucide="file-up" aria-hidden="true"></i>上传文件</button><button type="button" class="hs-button" id="hs-text-tab"><i data-lucide="type" aria-hidden="true"></i>粘贴文字</button></div>
+        <input type="file" class="hs-native-file" id="hs-demo-file" accept=".xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp" multiple aria-label="选择询价表格或图片">
+        <textarea id="hs-demo-text" placeholder="将客户提供的尺寸、数量、印刷要求等粘贴到这里" aria-label="询价文字" hidden></textarea>
+        <div class="hs-import-bottom"><span>Agent 完成核价后，进入内部报价池。</span><button type="button" class="hs-button hs-primary" id="hs-start-demo">开始自动核价<i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
+      </div>
+      <div class="hs-summary"><div class="hs-summary-head"><h2 id="hs-summary-title">今日报价汇总</h2><button type="button" class="hs-button hs-subtle" id="hs-summary-toggle">查看本周<i data-lucide="arrow-right" aria-hidden="true"></i></button></div><ol id="hs-summary-list"></ol></div>
+    </section>
+    <footer class="hs-page-footer"><span>trade flow · 报价工作台</span><button type="button" class="hs-about-link" id="hs-about">关于本系统</button></footer>
+  </main>
+  <dialog id="hs-pool-dialog" aria-labelledby="hs-dialog-title">
+    <div class="hs-dialog-head"><h2 id="hs-dialog-title">报价单预览</h2><button type="button" class="hs-close" id="hs-dialog-close" aria-label="关闭预览"><i data-lucide="x" aria-hidden="true"></i></button></div>
+    <div class="hs-dialog-body" id="hs-dialog-body"></div>
+    <div class="hs-dialog-actions" id="hs-dialog-actions"></div>
+  </dialog>
+</div>
+
+</body></html>
