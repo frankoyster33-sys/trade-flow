@@ -1,6 +1,6 @@
 # trade flow
 
-面向塑料袋业务报价的本机工作台：导入 Excel、图片或文字，由硅基流动模型提取规格，按已有规则生成内部 Excel；业务员在 WPS 或 Excel 审核、保存后，一键生成独立的对外 Quotation Sheet。
+面向塑料包装业务报价的本机工作台：导入 Excel、图片或文字，由硅基流动/其他模型提供方如：open ai、anthropic、openrounter等模型提取规格，按已有规则生成内部 Excel；业务员在 WPS 或 Excel 审核、保存后，一键生成独立的对外 Quotation Sheet。
 
 ## 日常使用
 
