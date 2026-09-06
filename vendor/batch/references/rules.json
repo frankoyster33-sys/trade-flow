@@ -1,0 +1,162 @@
+{
+  "version": "2026-09-06",
+  "source": "User-confirmed rules based on 报价模版.xlsx and supplied reference images",
+  "defaults": {
+    "raw_material_cny_per_ton": 8200,
+    "additive_cny_per_ton": 0,
+    "carton_cost_cny": 5,
+    "carton_tare_kg": 1,
+    "markup_multiplier": 1.12,
+    "tax_multiplier": 1.1,
+    "fx_cny_per_usd": 6.7,
+    "trade_term": "FOB",
+    "port": "Shenzhen"
+  },
+  "materials": {
+    "HDPE": { "weight_factor": 0.19, "capacity_column": "hd" },
+    "LDPE": { "weight_factor": 0.184, "capacity_column": "ld" },
+    "PP": { "weight_factor": 0.184, "capacity_column": "ld" }
+  },
+  "color_masterbatch_cny_per_ton": {
+    "transparent": 0,
+    "black": 600,
+    "white": 600,
+    "other": 852
+  },
+  "processing_fee_tiers": [
+    { "min_kg": 30, "max_kg_exclusive": 50, "cny_per_kg": 10 },
+    { "min_kg": 50, "max_kg_exclusive": 80, "cny_per_kg": 7 },
+    { "min_kg": 80, "max_kg_exclusive": 100, "cny_per_kg": 5 },
+    { "min_kg": 100, "max_kg_exclusive": 120, "cny_per_kg": 4 },
+    { "min_kg": 120, "max_kg_exclusive": 150, "cny_per_kg": 3.5 },
+    { "min_kg": 150, "max_kg_exclusive": 200, "cny_per_kg": 3 },
+    { "min_kg": 200, "max_kg_exclusive": 250, "cny_per_kg": 2.5 },
+    { "min_kg": 250, "max_kg_exclusive": null, "cny_per_kg": 2 }
+  ],
+  "thick_capacity_reduction": [
+    { "min_exclusive_mm": 0.06, "max_inclusive_mm": 0.07, "factor": 0.9 },
+    { "min_exclusive_mm": 0.07, "max_inclusive_mm": 0.08, "factor": 0.8 },
+    { "min_exclusive_mm": 0.08, "max_inclusive_mm": 0.1, "factor": 0.65 },
+    { "min_exclusive_mm": 0.1, "max_inclusive_mm": 0.13, "factor": 0.6 },
+    { "min_exclusive_mm": 0.13, "max_inclusive_mm": null, "factor": 0.5 }
+  ],
+  "capacity_tables": {
+    "t1": {
+      "label": "0.011–<0.015 mm",
+      "rows": [
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 10, "lmin_inc": true, "lmax": 20, "hd": 45000, "ld": 40000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 20, "lmax": 30, "hd": 40000, "ld": 35000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 30, "lmax": 40, "hd": 35000, "ld": 30000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 40, "lmax": 50, "hd": 30000, "ld": 25000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 50, "lmax": null, "hd": 20000, "ld": 15000 },
+
+        { "wmin": 30, "wmax": 40, "lmin": 20, "lmax": 30, "hd": 40000, "ld": 35000 },
+        { "wmin": 30, "wmax": 40, "lmin": 30, "lmax": 40, "hd": 35000, "ld": 30000 },
+        { "wmin": 30, "wmax": 40, "lmin": 40, "lmax": 50, "hd": 30000, "ld": 25000 },
+        { "wmin": 30, "wmax": 40, "lmin": 50, "lmax": 60, "hd": 20000, "ld": 15000 },
+        { "wmin": 30, "wmax": 40, "lmin": 60, "lmax": 100, "hd": 15000, "ld": 10000 },
+
+        { "wmin": 40, "wmax": null, "lmin": 30, "lmax": 40, "hd": 35000, "ld": 30000 },
+        { "wmin": 40, "wmax": null, "lmin": 40, "lmax": 50, "hd": 30000, "ld": 25000 },
+        { "wmin": 40, "wmax": null, "lmin": 50, "lmax": 60, "hd": 20000, "ld": 15000 },
+        { "wmin": 40, "wmax": null, "lmin": 60, "lmax": 70, "hd": 15000, "ld": 10000 },
+        { "wmin": 40, "wmax": null, "lmin": 70, "lmax": 85, "hd": 10000, "ld": 7000 }
+      ]
+    },
+    "t2": {
+      "label": "0.015–<0.025 mm",
+      "rows": [
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 10, "lmin_inc": true, "lmax": 20, "hd": 48000, "ld": 45000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 20, "lmax": 30, "hd": 42000, "ld": 40000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 30, "lmax": 40, "hd": 40000, "ld": 38000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 40, "lmax": 50, "hd": 30000, "ld": 28000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 50, "lmax": null, "hd": 20000, "ld": 15000 },
+
+        { "wmin": 30, "wmax": 60, "lmin": 20, "lmax": 30, "hd": 45000, "ld": 42000 },
+        { "wmin": 30, "wmax": 60, "lmin": 30, "lmax": 40, "hd": 40000, "ld": 35000 },
+        { "wmin": 30, "wmax": 60, "lmin": 40, "lmax": 50, "hd": 28000, "ld": 25000 },
+        { "wmin": 30, "wmax": 60, "lmin": 50, "lmax": 60, "hd": 18000, "ld": 15000 },
+        { "wmin": 30, "wmax": 60, "lmin": 60, "lmax": 100, "hd": 15000, "ld": 10000 },
+
+        { "wmin": 60, "wmax": null, "lmin": 40, "lmax": 50, "hd": 25000, "ld": 22000 },
+        { "wmin": 60, "wmax": null, "lmin": 50, "lmax": 60, "hd": 20000, "ld": 15000 },
+        { "wmin": 60, "wmax": null, "lmin": 60, "lmax": 70, "hd": 15000, "ld": 10000 },
+        { "wmin": 60, "wmax": null, "lmin": 70, "lmax": 85, "hd": 10000, "ld": 7000 }
+      ]
+    },
+    "t3": {
+      "label": "0.025–<0.04 mm",
+      "rows": [
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 10, "lmin_inc": true, "lmax": 20, "hd": 50000, "ld": 50000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 20, "lmax": 30, "hd": 45000, "ld": 45000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 30, "lmax": 40, "hd": 40000, "ld": 40000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 40, "lmax": 50, "hd": 35000, "ld": 35000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 50, "lmax": null, "hd": 25000, "ld": 25000 },
+
+        { "wmin": 30, "wmax": 50, "lmin": 20, "lmax": 30, "hd": 45000, "ld": 45000 },
+        { "wmin": 30, "wmax": 50, "lmin": 30, "lmax": 40, "hd": 38000, "ld": 38000 },
+        { "wmin": 30, "wmax": 50, "lmin": 40, "lmax": 50, "hd": 33000, "ld": 33000 },
+        { "wmin": 30, "wmax": 50, "lmin": 50, "lmax": 60, "hd": 30000, "ld": 30000 },
+        { "wmin": 30, "wmax": 50, "lmin": 60, "lmax": 100, "hd": 18000, "ld": 18000 },
+
+        { "wmin": 50, "wmax": null, "lmin": 40, "lmax": 50, "hd": 30000, "ld": 30000 },
+        { "wmin": 50, "wmax": null, "lmin": 50, "lmax": 60, "hd": 25000, "ld": 25000 },
+        { "wmin": 50, "wmax": null, "lmin": 60, "lmax": 70, "hd": 20000, "ld": 20000 },
+        { "wmin": 50, "wmax": null, "lmin": 70, "lmax": 85, "hd": 10000, "ld": 10000 },
+        { "wmin": 50, "wmax": null, "lmin": 90, "lmin_inc": true, "lmax": null, "hd": 6000, "ld": 6000 }
+      ]
+    },
+    "t4": {
+      "label": "0.04–0.06 mm base table",
+      "rows": [
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 10, "lmin_inc": true, "lmax": 20, "hd": 50000, "ld": 45000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 20, "lmax": 30, "hd": 50000, "ld": 40000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 30, "lmax": 40, "hd": 45000, "ld": 38000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 40, "lmax": 50, "hd": 35000, "ld": 28000 },
+        { "wmin": 10, "wmin_inc": true, "wmax": 30, "lmin": 50, "lmax": 70, "hd": 25000, "ld": 15000 },
+
+        { "wmin": 30, "wmax": 50, "lmin": 20, "lmax": 30, "hd": 40000, "ld": 40000 },
+        { "wmin": 30, "wmax": 50, "lmin": 30, "lmax": 40, "hd": 38000, "ld": 38000 },
+        { "wmin": 30, "wmax": 50, "lmin": 40, "lmax": 50, "hd": 35000, "ld": 35000 },
+        { "wmin": 30, "wmax": 50, "lmin": 50, "lmax": 60, "hd": 22000, "ld": 22000 },
+        { "wmin": 30, "wmax": 50, "lmin": 60, "lmax": 80, "hd": 15000, "ld": 15000 },
+        { "wmin": 30, "wmax": 50, "lmin": 80, "lmax": null, "hd": 10000, "ld": 10000 },
+
+        { "wmin": 60, "wmin_inc": true, "wmax": null, "lmin": 50, "lmax": 60, "hd": 20000, "ld": 20000 },
+        { "wmin": 60, "wmin_inc": true, "wmax": null, "lmin": 60, "lmax": 80, "hd": 13000, "ld": 13000 },
+        { "wmin": 60, "wmin_inc": true, "wmax": null, "lmin": 80, "lmax": 100, "hd": 10000, "ld": 10000 }
+      ]
+    }
+  },
+  "printing": {
+    "max_coverage_pct": 30,
+    "minimum_table_quantity": 50000,
+    "size_bands": [
+      { "max_cm": 10, "prices": [0.005, 0.01, 0.015, 0.02, 0.025, 0.03] },
+      { "max_cm": 15, "prices": [0.006, 0.011, 0.017, 0.023, 0.028, 0.032] },
+      { "max_cm": 30, "prices": [0.008, 0.0145, 0.022, 0.028, 0.036, 0.042] },
+      { "max_cm": 40, "prices": [0.009, 0.016, 0.025, 0.03, 0.035, 0.04] },
+      { "max_cm": 50, "prices": [0.01, 0.018, 0.026, 0.033, 0.04, 0.048] },
+      { "max_cm": 60, "prices": [0.015, 0.022, 0.027, 0.035, 0.045, 0.05] }
+    ],
+    "over_60_base_prices": [0.018, 0.028, 0.04, 0.045, 0.052, 0.065],
+    "startup_fees": [
+      { "min_colors": 1, "max_colors": 2, "cny": 500 },
+      { "min_colors": 3, "max_colors": 4, "cny": 800 },
+      { "min_colors": 5, "max_colors": 6, "cny": 1200 }
+    ]
+  },
+  "fob": {
+    "supported_ports": ["shenzhen", "深圳", "guangzhou", "广州"],
+    "tiers": [
+      { "max_kg_exclusive": 1000, "cny": 1800 },
+      { "max_kg_exclusive": 2000, "cny": 2000 },
+      { "max_kg_exclusive": 3000, "cny": 2300 },
+      { "max_kg_exclusive": 5000, "cny": 2800 },
+      { "max_kg_exclusive": 10000, "cny": 3500 },
+      { "max_kg_exclusive": 15000, "cny": 4000 },
+      { "max_kg_exclusive": 25000, "cny": 4500 }
+    ],
+    "at_or_above_25000_cny_per_kg": 0.24
+  }
+}
