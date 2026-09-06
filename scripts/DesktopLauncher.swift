@@ -12,6 +12,29 @@ app.setActivationPolicy(.accessory)
 let logger = Logger(subsystem: "local.tradeflow.quotation", category: "launcher")
 logger.notice("Desktop launcher started")
 
+// Reopen a running workbench without reading its project folder again.
+let port = Int(ProcessInfo.processInfo.environment["HS_QUOTE_PORT"] ?? "60322") ?? 60322
+let workbenchURL = URL(string: "http://127.0.0.1:\(port)/")!
+let health = Process()
+let healthOutput = Pipe()
+health.executableURL = URL(fileURLWithPath: "/usr/bin/curl")
+health.arguments = ["--silent", "--fail", "--max-time", "2", workbenchURL.appendingPathComponent("api/health").absoluteString]
+health.standardOutput = healthOutput
+health.standardError = FileHandle.nullDevice
+do {
+    try health.run()
+    health.waitUntilExit()
+    let data = healthOutput.fileHandleForReading.readDataToEndOfFile()
+    let result = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+    if health.terminationStatus == 0 && result?["application"] as? String == "hengsheng-quotation" {
+        let opened = NSWorkspace.shared.open(workbenchURL)
+        record(opened ? "已打开正在运行的报价工作台" : "浏览器未能打开报价工作台")
+        exit(opened ? 0 : 1)
+    }
+} catch {
+    logger.info("Workbench is not running; starting project")
+}
+
 func showError(_ message: String) {
     app.activate(ignoringOtherApps: true)
     let alert = NSAlert()
